@@ -1,3 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Remove pointer cursor globally */
+* { cursor: default !important; }
