@@ -11663,7 +11663,7 @@ body[data-bs-theme=dark] .navbar[data-bs-theme=light] {
 }
 
 .cursor-none {
-  cursor: none !important;
+  /* cursor: none !important; */
 }
 
 .cursor-help {

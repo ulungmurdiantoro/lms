@@ -94,7 +94,7 @@
     <!--Scroll Button js-->
     <script src="{{ asset('frontend/assets/js/scroll_button.js') }}"></script>
     <!--pointer js-->
-    <script src="{{ asset('frontend/assets/js/pointer.js') }}"></script>
+    {{-- <script src="{{ asset('frontend/assets/js/pointer.js') }}"></script> --}}
     <!--range slider js-->
     <script src="{{ asset('frontend/assets/js/range_slider.js') }}"></script>
     <!--barfiller js-->

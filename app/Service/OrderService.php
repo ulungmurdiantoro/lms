@@ -17,7 +17,7 @@ class OrderService
         float $total_amount,
         float $paid_amount,
         string $currency,
-        string $payment_method,
+        string $payment_method
     ) {
         try {
             $order = new Order();
@@ -34,6 +34,7 @@ class OrderService
             /** store order items */
             $cart = Cart::where('user_id', $buyer_id);
             $cartItems = $cart->get();
+            // dd($cartItems);
             foreach ($cartItems as $item) {
                 $orderItem = new OrderItem();
                 $orderItem->order_id = $order->id;

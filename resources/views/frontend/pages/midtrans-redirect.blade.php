@@ -4,44 +4,35 @@
     <meta charset="UTF-8">
     <title>Midtrans Payment</title>
     <script src="https://app.sandbox.midtrans.com/snap/snap.js" 
-            data-client-key="{{ config('gateway_settings.midtrans_client_key') }}">
+            data-client-key="{{ config('services.midtrans.client_key') }}">
     </script>
 </head>
+{{-- @dd(config('services.midtrans.client_key')) --}}
 <body>
     <h1>Midtrans Payment Page</h1>
     <div id="status">Loading Snap...</div>
 
     <script>
-        fetch("{{ route('midtrans.token') }}")
-            .then(res => res.json())
-            .then(data => {
+        async function initPayment() {
+            try {
+                const res = await fetch("{{ route('midtrans.token') }}");
+                const data = await res.json();
+                if (!data.token) throw new Error("No token");
+
                 document.getElementById('status').innerText = "Snap token received";
-                console.log("Snap token:", data.token);
-
-                if (!data.token) {
-                    alert("No token received");
-                    return;
-                }
-
                 window.snap.pay(data.token, {
-                    onSuccess: function(result) {
-                        window.location.href = "{{ route('order.success') }}";
-                    },
-                    onPending: function(result) {
-                        window.location.href = "{{ route('order.success') }}";
-                    },
-                    onError: function(result) {
-                        window.location.href = "{{ route('order.failed') }}";
-                    },
-                    onClose: function() {
-                        alert('Payment popup closed');
-                    }
+                    onSuccess: () => window.location.href = "{{ route('order.success') }}",
+                    onPending: () => window.location.href = "{{ route('order.success') }}",
+                    onError: () => window.location.href = "{{ route('order.failed') }}",
+                    onClose: () => alert('Payment popup closed')
                 });
-            })
-            .catch(error => {
+            } catch (error) {
                 console.error("Token fetch failed:", error);
                 document.getElementById('status').innerText = "Failed to load Snap";
-            });
+            }
+        }
+
+        initPayment();
     </script>
 </body>
 </html>

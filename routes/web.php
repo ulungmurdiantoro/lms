@@ -55,6 +55,16 @@ use Illuminate\Support\Facades\Route;
  Route::get('/midtrans/token', [PaymentController::class, 'createSnapToken'])->name('midtrans.token');
  Route::post('/midtrans/callback', [PaymentController::class, 'handleCallback'])->name('midtrans.callback');
 
+ Route::get('/test-env', function () {
+    return config('services.midtrans.client_key');
+});
+
+Route::get('/test-config', function () {
+    return config('gateway_settings.midtrans_client_key');
+});
+
+Route::get('/test-snap-token', [PaymentController::class, 'createSnapToken']);
+
 
  Route::get('order-success', [PaymentController::class, 'orderSuccess'])->name('order.success');
  Route::get('order-failed', [PaymentController::class, 'orderFailed'])->name('order.failed');

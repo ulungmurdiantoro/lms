@@ -32,7 +32,7 @@
             <div class="col-xl-8 col-lg-7 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                 <div class="payment_area">
                     <div class="row">
-                        {{-- <div class="col-xl-3 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
+                        <div class="col-xl-3 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                             <a href="{{ route('paypal.payment') }}" class="payment_mathod">
                                 <img style="max-width: 100% !important;" src="{{ asset('default-files/paypal-logo.png') }}" alt="payment" class="img-fluid w-100">
                             </a>
@@ -46,7 +46,7 @@
                             <a href="{{ route('razorpay.redirect') }}" class="payment_mathod">
                                 <img src="{{ asset('default-files/razorpay-logo.png') }}" alt="payment" class="img-fluid w-100">
                             </a>
-                        </div> --}}
+                        </div>
                         <div class="col-xl-5 col-6 col-md-4 wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                             <a href="{{ route('midtrans.redirect') }}" class="payment_mathod">
                                 <img style="max-width: 100% !important;" src="{{ asset('default-files/midtrans_logo.png') }}" alt="payment" class="img-fluid w-100">

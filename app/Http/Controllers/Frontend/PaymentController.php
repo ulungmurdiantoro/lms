@@ -184,6 +184,7 @@ class PaymentController extends Controller
     function razorpayRedirect() {
         return view('frontend.pages.razorpay-redirect');
     }
+
     function payWithRazorpay(Request $request) {
         $api = new RazorpayApi(
             config('gateway_settings.razorpay_key'),
@@ -227,17 +228,17 @@ class PaymentController extends Controller
 
     public function createSnapToken()
     {
-        // ✅ Correct key assignment
-        Config::$serverKey = 'SB-Mid-server-si8wLPhmYOqhtm8D6seUJvEH';
-        Config::$clientKey = 'SB-Mid-client-wy7PicT-Ytztk_c-';
-        Config::$isProduction = false;
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
+        // Konfigurasi Midtrans
+        \Midtrans\Config::$serverKey = config('services.midtrans.server_key'); 
+        \Midtrans\Config::$isProduction = config('services.midtrans.is_production', false);
+        \Midtrans\Config::$isSanitized = true;
+        \Midtrans\Config::$is3ds = true;
 
+        // Data transaksi
         $params = [
             'transaction_details' => [
                 'order_id' => 'ORDER-' . time(),
-                'gross_amount' => cartTotal(),
+                'gross_amount' => cartTotal(), // pastikan fungsi ini valid
             ],
             'customer_details' => [
                 'first_name' => auth()->user()->name,
@@ -245,23 +246,27 @@ class PaymentController extends Controller
             ],
         ];
 
-        $snapToken = Snap::getSnapToken($params);
+        // Ambil token Snap
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+
         return response()->json(['token' => $snapToken]);
     }
 
     public function handleCallback(Request $request)
     {
-        $serverKey = config('gateway_settings.midtrans_server_key');
-        $signatureKey = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        $serverKey = config('services.midtrans.server_key'); // ✅ bukan client_key
 
-        if ($signatureKey !== $request->signature_key) {
+        // Validasi signature
+        $expectedSignature = hash('sha512', $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        if ($expectedSignature !== $request->signature_key) {
             return response()->json(['message' => 'Invalid signature'], 403);
         }
 
-        if ($request->transaction_status === 'capture' || $request->transaction_status === 'settlement') {
+        // Proses status transaksi
+        if (in_array($request->transaction_status, ['capture', 'settlement'])) {
             OrderService::storeOrder(
                 $request->transaction_id,
-                auth()->user()->id,
+                $request->user_id ?? auth()->id(), 
                 'approved',
                 $request->gross_amount,
                 $request->gross_amount,
@@ -273,4 +278,5 @@ class PaymentController extends Controller
 
         return redirect()->route('order.failed');
     }
+
 }
